@@ -1,6 +1,8 @@
 import hashlib
 
 from django.test import TestCase
+from django.core.exceptions import ValidationError
+
 from selenium import webdriver
 
 from .forms import HashForm
@@ -31,7 +33,13 @@ helloHash = '2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824'.l
 
 
 class UnitTestCase(TestCase):
-    
+    def saveHash(self):
+        hash = Hash()
+        hash.text = 'hello'
+        hash.hash = helloHash
+        hash.save()
+        return hash
+
     def test_home_homepage_template(self):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'hashing/home.html')
@@ -44,13 +52,6 @@ class UnitTestCase(TestCase):
         text_hash = hashlib.sha256('hello'.encode('utf-8')).hexdigest()
         self.assertEqual(text_hash, helloHash)
 
-    def saveHash(self):
-        hash = Hash()
-        hash.text = 'hello'
-        hash.hash = helloHash
-        hash.save()
-        return hash
-
     def test_hash_object(self):
         hash = self.saveHash()
         pulled_hash = Hash.objects.get(hash=helloHash)
@@ -61,3 +62,9 @@ class UnitTestCase(TestCase):
         response = self.client.get(f'/hash/{helloHash}')
         self.assertContains(response, 'hello')
 
+    def test_bad_data(self):
+        def bad_hash():
+            hash = Hash()
+            hash.hash = 'fjsdäpgjdfpgjfaüg9jr90gijfgfijgdfgjfögjfdögjdfoögjdfögjfödgfjsdöogihfögohfdöghdföghdfghfdgsdfgdfl'
+            hash.full_clean()
+        self.assertRaises(ValidationError, bad_hash) 
