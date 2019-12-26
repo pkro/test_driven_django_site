@@ -1,9 +1,11 @@
-import hashlib
-
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 from .forms import HashForm
 from .models import Hash
+
+from .utils import get_hash
+
 
 def home(request):
     form = HashForm(initial={'algo': 'sha256'})
@@ -13,9 +15,9 @@ def home(request):
         if filledForm.is_valid():
             text = filledForm.cleaned_data['text']
             algo = filledForm.cleaned_data['algo']
-            hashFunc = hashlib.new(algo)
-            hashFunc.update(text.encode('utf-8'))
-            text_hash = hashFunc.hexdigest()
+            
+            text_hash = get_hash(algo, text)
+
             try:
                 Hash.objects.get(hash=text_hash, algo=algo)
             except Hash.DoesNotExist:
@@ -32,3 +34,8 @@ def home(request):
 def hash(request, hash):
     hash = Hash.objects.get(hash=hash)
     return render(request, 'hashing/hash.html', {'hash': hash})
+
+def quickhash(request):
+    text = request.GET['text']
+    data = {'hash': get_hash('sha256', text)}
+    return JsonResponse(data)
