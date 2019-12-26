@@ -7,6 +7,23 @@
     <button type="submit" class="btn btn-primary" name="submit">Submit</button>
   </form>
       
+  <h2 id="quickhash"></h2>
+  
+  <script>
+  $('#id_text').keyup(function() {
+   let text = $(this).val();
+   $.ajax({
+     url: '/quickhash',
+     data: {
+       text: text,
+     },
+     dataType: 'json',
+     success: function(data) {
+       $('#quickhash').text(data['hash']);
+     }
+   });
+  });
+  </script>
   {{ hash }}
 
 {% endblock content %}
