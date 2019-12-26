@@ -1,3 +1,5 @@
+import time
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
@@ -31,7 +33,7 @@ class FunctionalTestCase(TestCase):
         self.browser.get('http://localhost:8000/')
         text = self.browser.find_element_by_id('id_text')
         text.send_keys('hello')
-        # self.browser.find_element_by_name('submit').click()
+        time.sleep(5) # wait for Ajax
         self.assertIn(helloHash, self.browser.page_source)
 
     def tearDown(self):
