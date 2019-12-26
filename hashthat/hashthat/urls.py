@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from hashing import views as hashing_views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', hashing_views.home, name="home"),
 ]
