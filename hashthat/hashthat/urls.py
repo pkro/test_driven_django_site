@@ -19,5 +19,6 @@ from hashing import views as hashing_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', hashing_views.home, name="home"),
-    path('hash/<str:hash>', hashing_views.hash, name="home"),
+    path('hash/<str:hash>', hashing_views.hash, name="hash"),
+    path('quickhash', hashing_views.quickhash, name="quickhash"),
 ]
