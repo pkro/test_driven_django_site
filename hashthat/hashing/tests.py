@@ -44,10 +44,20 @@ class UnitTestCase(TestCase):
         text_hash = hashlib.sha256('hello'.encode('utf-8')).hexdigest()
         self.assertEqual(text_hash, helloHash)
 
-    def test_hash_object(self):
+    def saveHash(self):
         hash = Hash()
         hash.text = 'hello'
         hash.hash = helloHash
         hash.save()
+        return hash
+
+    def test_hash_object(self):
+        hash = self.saveHash()
         pulled_hash = Hash.objects.get(hash=helloHash)
         self.assertEqual(hash.text, pulled_hash.text)
+
+    def test_viewing_hash(self):
+        hash = self.saveHash()
+        response = self.client.get(f'/hash/{helloHash}')
+        self.assertContains(response, 'hello')
+

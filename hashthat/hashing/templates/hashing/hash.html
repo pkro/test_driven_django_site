@@ -1,0 +1,9 @@
+{% extends 'hashing/base_template.html' %}
+{% block content %}
+
+  <p>hash text: {{ hash.text }}</p>
+  <p>hash: {{ hash.hash }}</p>
+  <p>hash algo: {{ hash.algo }}</p>
+
+<a href="{% url 'home' %}">Back</a>
+{% endblock content %}
